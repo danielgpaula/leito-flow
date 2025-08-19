@@ -49,9 +49,9 @@ const Index = () => {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Painel de Controle</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Painel de Controle - Hospital</h2>
           <p className="text-muted-foreground">
-            Acompanhe a ocupação dos leitos em todas as unidades do hospital
+            Acompanhe a ocupação dos leitos em todas as unidades do hospital em tempo real
           </p>
         </div>
 
