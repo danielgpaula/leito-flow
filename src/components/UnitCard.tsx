@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 interface UnitCardProps {
   title: string;
@@ -12,6 +13,7 @@ interface UnitCardProps {
 }
 
 export function UnitCard({ title, totalBeds, occupiedBeds, icon, className }: UnitCardProps) {
+  const navigate = useNavigate();
   const availableBeds = totalBeds - occupiedBeds;
   const occupancyRate = (occupiedBeds / totalBeds) * 100;
   
@@ -28,10 +30,13 @@ export function UnitCard({ title, totalBeds, occupiedBeds, icon, className }: Un
   };
 
   return (
-    <Card className={cn(
-      "hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-secondary/20",
-      className
-    )}>
+    <Card 
+      className={cn(
+        "hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-card to-secondary/20 cursor-pointer hover:scale-105",
+        className
+      )}
+      onClick={() => navigate(`/unit/${encodeURIComponent(title)}`)}
+    >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
         <div className="text-primary">{icon}</div>
