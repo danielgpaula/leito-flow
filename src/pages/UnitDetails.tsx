@@ -193,10 +193,7 @@ const UnitDetails = () => {
                             variant="outline"
                             size="sm"
                             className="flex items-center space-x-1"
-                            onClick={() => {
-                              // TODO: Navigate to patient details
-                              console.log("Ver detalhes do paciente:", patient.id);
-                            }}
+                            onClick={() => navigate(`/unit/${unitName}/patient/${patient.id}`)}
                           >
                             <Eye className="h-3 w-3" />
                             <span>Detalhes</span>
