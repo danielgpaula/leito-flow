@@ -170,10 +170,14 @@ const PatientDetails = () => {
                 <CardContent>
                   <div className="space-y-2">
                     {patient.devices.map((device, index) => (
-                      <div key={index} className="flex items-center space-x-2">
+                      <button
+                        key={index}
+                        onClick={() => navigate(`/unit/${unitName}/patient/${patientId}/device/${device}`)}
+                        className="flex items-center space-x-2 w-full text-left p-2 rounded-md hover:bg-accent transition-colors"
+                      >
                         <Heart className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{device}</span>
-                      </div>
+                        <span className="text-sm text-primary hover:underline">{device}</span>
+                      </button>
                     ))}
                   </div>
                 </CardContent>
