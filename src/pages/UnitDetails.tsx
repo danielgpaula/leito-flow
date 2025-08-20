@@ -202,10 +202,7 @@ const UnitDetails = () => {
                             variant="outline"
                             size="sm"
                             className="flex items-center space-x-1"
-                            onClick={() => {
-                              // TODO: Navigate to patient exams
-                              console.log("Ver exames do paciente:", patient.id);
-                            }}
+                            onClick={() => navigate(`/unit/${unitName}/patient/${patient.id}/exams`)}
                           >
                             <FileText className="h-3 w-3" />
                             <span>Exames</span>
