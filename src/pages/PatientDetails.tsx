@@ -21,7 +21,11 @@ const PatientDetails = () => {
     evolutionDate: "2024-08-20",
     riskFactors: ["Diabetes", "Hipertensão", "Idade avançada"],
     fever: { present: true, value: 38.5 },
-    devices: ["Cateter Venoso Central", "Sonda Vesical", "Ventilação Mecânica"],
+    devices: [
+      { name: "Acesso Venoso Periférico", code: "AVP" },
+      { name: "Cateter Central de Inserção Periférica", code: "PICC" },
+      { name: "Sonda Vesical de Demora", code: "SVD" }
+    ],
     antibiotics: ["Vancomicina 1g 12/12h", "Meropenem 1g 8/8h"],
     surgery: { performed: true, type: "Laparotomia exploratória" },
     secretion: { observed: true, type: "Purulenta", location: "Ferida operatória" },
@@ -172,11 +176,11 @@ const PatientDetails = () => {
                     {patient.devices.map((device, index) => (
                       <button
                         key={index}
-                        onClick={() => navigate(`/unit/${unitName}/patient/${patientId}/device/${device}`)}
+                        onClick={() => navigate(`/unit/${unitName}/patient/${patientId}/device/${device.code}`)}
                         className="flex items-center space-x-2 w-full text-left p-2 rounded-md hover:bg-accent transition-colors"
                       >
                         <Heart className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm text-primary hover:underline">{device}</span>
+                        <span className="text-sm text-primary hover:underline">{device.name}</span>
                       </button>
                     ))}
                   </div>
