@@ -1,8 +1,18 @@
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Eye, FileText, Shield, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Eye, FileText, Shield, ShieldAlert, Info, AlertTriangle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -26,6 +36,68 @@ interface Patient {
 const UnitDetails = () => {
   const { unitName } = useParams();
   const navigate = useNavigate();
+  const [selectedIsolation, setSelectedIsolation] = useState<string | null>(null);
+
+  // Mock data for isolation details
+  const isolationDetails = {
+    contact: {
+      title: "Isolamento de Contato",
+      description: "Precauções para prevenir transmissão por contato direto ou indireto",
+      organisms: [
+        "Staphylococcus aureus resistente à meticilina (MRSA)",
+        "Enterococcus resistente à vancomicina (VRE)",
+        "Acinetobacter baumannii multirresistente",
+        "Clostridioides difficile",
+        "Klebsiella pneumoniae produtora de carbapenemase"
+      ],
+      precautions: [
+        "Uso de luvas e avental para contato com paciente ou ambiente",
+        "Quarto privativo ou coorte de pacientes",
+        "Higienização das mãos antes e após contato",
+        "Desinfecção de equipamentos entre pacientes"
+      ],
+      icon: Shield,
+      color: "text-warning"
+    },
+    droplet: {
+      title: "Isolamento por Gotículas", 
+      description: "Precauções para prevenir transmissão por gotículas respiratórias",
+      organisms: [
+        "Streptococcus pneumoniae multirresistente",
+        "Haemophilus influenzae",
+        "Neisseria meningitidis",
+        "Mycoplasma pneumoniae",
+        "Bordetella pertussis"
+      ],
+      precautions: [
+        "Máscara cirúrgica a menos de 1 metro do paciente",
+        "Quarto privativo ou coorte de pacientes",
+        "Paciente deve usar máscara ao sair do quarto",
+        "Higienização das mãos adequada"
+      ],
+      icon: ShieldAlert,
+      color: "text-destructive"
+    },
+    airborne: {
+      title: "Isolamento Aéreo",
+      description: "Precauções para prevenir transmissão por núcleos de gotículas aéreas",
+      organisms: [
+        "Mycobacterium tuberculosis",
+        "Vírus varicela-zoster (catapora/herpes zoster)",
+        "Vírus do sarampo",
+        "Aspergillus spp. (em imunodeprimidos)",
+        "Vírus SARS-CoV-2 (procedimentos geradores de aerossol)"
+      ],
+      precautions: [
+        "Quarto com pressão negativa e filtro HEPA",
+        "Máscara N95/PFF2 ou superior",
+        "Porta mantida fechada",
+        "Limitação do número de profissionais"
+      ],
+      icon: ShieldAlert,
+      color: "text-destructive"
+    }
+  };
 
   // Mock data - in real app this would come from API
   const patients: Patient[] = [
@@ -97,16 +169,79 @@ const UnitDetails = () => {
   const getIsolationBadge = (isolation: boolean, type?: string) => {
     if (!isolation) return <Badge variant="outline">Sem Isolamento</Badge>;
     
-    switch (type) {
-      case "contact":
-        return <Badge variant="warning">Contato</Badge>;
-      case "droplet":
-        return <Badge variant="destructive">Gotículas</Badge>;
-      case "airborne":
-        return <Badge variant="destructive">Aéreo</Badge>;
-      default:
-        return <Badge variant="warning">Isolamento</Badge>;
-    }
+    const content = () => {
+      switch (type) {
+        case "contact":
+          return <Badge variant="warning" className="cursor-pointer hover:opacity-80 transition-opacity">Contato</Badge>;
+        case "droplet":
+          return <Badge variant="destructive" className="cursor-pointer hover:opacity-80 transition-opacity">Gotículas</Badge>;
+        case "airborne":
+          return <Badge variant="destructive" className="cursor-pointer hover:opacity-80 transition-opacity">Aéreo</Badge>;
+        default:
+          return <Badge variant="warning" className="cursor-pointer hover:opacity-80 transition-opacity">Isolamento</Badge>;
+      }
+    };
+
+    if (!type || type === "none") return content();
+
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          {content()}
+        </DialogTrigger>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-background">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              {isolationDetails[type as keyof typeof isolationDetails] && (
+                <>
+                  {React.createElement(isolationDetails[type as keyof typeof isolationDetails].icon, { 
+                    className: `h-5 w-5 ${isolationDetails[type as keyof typeof isolationDetails].color}` 
+                  })}
+                  <span>{isolationDetails[type as keyof typeof isolationDetails].title}</span>
+                </>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {isolationDetails[type as keyof typeof isolationDetails]?.description}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {isolationDetails[type as keyof typeof isolationDetails] && (
+            <div className="space-y-6">
+              <div>
+                <h4 className="flex items-center space-x-2 text-sm font-semibold mb-3">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  <span>Microrganismos Associados</span>
+                </h4>
+                <ul className="space-y-2">
+                  {isolationDetails[type as keyof typeof isolationDetails].organisms.map((organism, index) => (
+                    <li key={index} className="text-sm text-muted-foreground flex items-start space-x-2">
+                      <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0" />
+                      <span>{organism}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="flex items-center space-x-2 text-sm font-semibold mb-3">
+                  <Info className="h-4 w-4 text-info" />
+                  <span>Precauções Necessárias</span>
+                </h4>
+                <ul className="space-y-2">
+                  {isolationDetails[type as keyof typeof isolationDetails].precautions.map((precaution, index) => (
+                    <li key={index} className="text-sm text-muted-foreground flex items-start space-x-2">
+                      <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0" />
+                      <span>{precaution}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    );
   };
 
   return (
